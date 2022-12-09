@@ -1,3 +1,4 @@
 export default function calculate(str) {
-    return eval(str)
+    let rez = eval(str)
+    return +rez.toFixed(10)
 }
