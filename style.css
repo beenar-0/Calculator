@@ -1,3 +1,8 @@
+* {
+    -moz-user-select: none;
+    user-select: none;
+}
+
 body {
     background: #FD8016;
 }
