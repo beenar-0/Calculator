@@ -21,6 +21,13 @@ export default class Calculator {
 
     textValue = ''
 
+    checkFunc(symbol) {
+        const func = ['+', '-', '/', '*', 'sin', 'cos', 'ln', '!']
+        return func.some((item)=>{
+            return item === symbol
+        })
+    }
+
     build() {
         this.container = render('div', ['container'], null, document.body);
         this.textarea = render('div', ['textarea'], null, this.container);
@@ -38,7 +45,12 @@ export default class Calculator {
                         this.textarea.innerHTML = temp.join('')
                     } else if (item === '=') {
                         this.textarea.innerHTML = calc(this.textarea.innerHTML)
-                    } else this.textarea.innerHTML += item
+                    } else if (item === '+') {
+                        let temp = this.textarea.innerHTML.split('')
+                        if (temp[temp.length-1] === '+'|| temp[temp.length-1] === '-')
+                        this.textarea.innerHTML = temp.join('')
+                    }
+                    else this.textarea.innerHTML += item
                 })
             })
         })
