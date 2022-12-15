@@ -22,10 +22,39 @@ export default class Calculator {
     innerValue = ''
 
     checkFunc(symbol) {
-        const func = ['+', '-', '/', '*', 'sin', 'cos', 'ln', '!','^','(',')']
+        const func = ['+', '-', '/', '*', 'sin', 'cos', 'ln', '!','^']
         return func.some((item) => {
             return item === symbol
         })
+    }
+
+    sinCosCheck (str) {
+        let exp = str
+
+        function checkCos(str) {
+            if (str.match(/cos\([^(cosin)]+\d*\)/) === null) return null
+            let reg = /\d\.*[+\-*\/]*/g
+            let temp = str.match(/cos\([^(cosin)]+\d*\)/)[0]
+            let rez = Math.cos(eval(temp.match(reg).join('')))
+            exp = str.replace(str.match(/cos\([^(cosin)]+\d*\)/)[0], rez)
+            if (exp.match(/cos\([^(cosin)]+\d*\)/) !== null) return checkCos(exp)
+            else return exp
+        }
+
+        function checkSin(str) {
+            if (str.match(/sin\([^(cosin)]+\d*\)/) === null) return null
+            let reg = /\d\.*[+\-*\/]*/g
+            let temp = str.match(/sin\([^(cosin)]+\d*\)/)[0]
+            let rez = Math.sin(eval(temp.match(reg).join('')))
+            exp = str.replace(str.match(/sin\([^(cosin)]+\d*\)/)[0], rez)
+            if (exp.match(/sin\([^(cosin)]+\d*\)/) !== null) return checkSin(exp)
+            else return exp
+        }
+
+        checkCos(str)
+        checkSin(str)
+        if (exp.match(/[cosin]/) !== null) return this.sinCosCheck(exp)
+        return eval(exp)
     }
 
     build() {
@@ -39,13 +68,14 @@ export default class Calculator {
                 if (item === '=') newKey.classList.add('equal')
                 newKey.innerHTML = item
                 newKey.addEventListener('click', () => {
+                    let currentText = this.textarea.innerHTML.split('')
                     if (item === 'sin') {
-                        if (this.checkFunc(this.textarea.innerHTML.split('')[this.textarea.innerHTML.split('').length-1])) {
+                        if (this.textarea.innerHTML === '' || this.checkFunc(currentText[currentText.length-1])) {
                             this.innerValue = this.textarea.innerHTML
                             this.textarea.innerHTML += 'sin('
                         }
                     } else if (item === 'cos') {
-                        if (this.checkFunc(this.textarea.innerHTML.split('')[this.textarea.innerHTML.split('').length-1])) {
+                        if (this.textarea.innerHTML === '' || this.checkFunc(currentText[currentText.length-1])) {
                             this.innerValue = this.textarea.innerHTML
                             this.textarea.innerHTML += 'cos('
                         }
@@ -54,7 +84,7 @@ export default class Calculator {
                         temp.pop()
                         this.textarea.innerHTML = temp.join('')
                     } else if (item === '=') {
-                        this.textarea.innerHTML = calc(this.textarea.innerHTML)
+                        this.textarea.innerHTML = calc(this.sinCosCheck(this.textarea.innerHTML))
                     } else if (this.checkFunc(item)) {
                         let temp = this.textarea.innerHTML.split('')
                         if (this.checkFunc(temp[temp.length - 1])) this.textarea.innerHTML = temp.join('')
