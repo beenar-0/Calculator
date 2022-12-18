@@ -1,6 +1,10 @@
-* {
+.button-container {
     -moz-user-select: none;
     user-select: none;
+}
+
+* {
+    transition: 0.3s;
 }
 
 body {
@@ -8,6 +12,7 @@ body {
 }
 
 .container {
+    position: relative;
     padding: 30px;
     font-family: 'Arial', sans-serif;
     font-style: normal;
@@ -23,7 +28,12 @@ body {
     justify-content: space-between;
     margin: 20px auto;
     width: 450px;
-    height: 600px;
+    height: 685px;
+}
+
+.container.horizontal {
+    width: 685px;
+    height: 500px;
 }
 
 .textarea {
@@ -36,15 +46,27 @@ body {
     margin-bottom: 30px;
 }
 
+.textarea.horizontal {
+    width: 625px;
+    height: 150px;
+}
+
 .button-container {
     gap: 15px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
     width: 410px;
+    height: 495px;
+}
+
+.button-container.horizontal {
+    width: 580px;
     height: 410px;
 }
 
 .button {
+    font-weight: 700;
     background-color: #DBDBDB;
     border-radius: 50px;
     box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.5), 5px 5px 10px rgba(117, 127, 138, 0.5);
@@ -63,5 +85,20 @@ body {
 }
 
 .equal {
-    width: 155px;
+    width: 240px;
+}
+
+.equal.horizontal {
+    width: 70px;
+}
+
+.rotate-icon {
+    cursor: pointer;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: url("./assets/rotate.png") center center no-repeat;
+    background-size: contain;
+    top: 15px;
+    right: 15px;
 }

@@ -1,95 +1,162 @@
 import render from './render.js';
-import calc from './calculate.js'
-
-// render(elem, [classList], [child], parent = null, ...attributes)
+import vertical_keys from './vertical_keys.js'
+import horizontal_keys from "./horizontal_keys.js";
 
 export default class Calculator {
-    verticalKeys = [
-        ['1', '2', '3', '/', 'sin'],
-        ['4', '5', '6', '*', 'cos'],
-        ['7', '8', '9', '+', 'ln'],
-        ['.', '0', '^', '-', '!'],
-        ['←', '(', ')', '=']
-    ];
+    isOrientVertical = true
 
-    horizontalKeys = [
-        ['1', '2', '3', '/', 'sin', '←'],
-        ['4', '5', '6', '*', 'cos', '('],
-        ['7', '8', '9', '+', 'ln', ')'],
-        ['.', '0', '^', '-', '!', '='],
-    ]
+    innerValue = []
+    outerValue = []
 
-    innerValue = ''
-
-    checkFunc(symbol) {
-        const func = ['+', '-', '/', '*', 'sin', 'cos', 'ln', '!','^']
-        return func.some((item) => {
-            return item === symbol
-        })
+    fact(n) {
+        if (Number.isInteger(eval(n)) && eval(n) >= 0) {
+            n = eval(n)
+            return n ? n * this.fact(n - 1) : 1;
+        } else {
+            this.innerValue = []
+        }
     }
 
-    sinCosCheck (str) {
-        let exp = str
-
-        function checkCos(str) {
-            if (str.match(/cos\([^(cosin)]+\d*\)/) === null) return null
-            let reg = /\d\.*[+\-*\/]*/g
-            let temp = str.match(/cos\([^(cosin)]+\d*\)/)[0]
-            let rez = Math.cos(eval(temp.match(reg).join('')))
-            exp = str.replace(str.match(/cos\([^(cosin)]+\d*\)/)[0], rez)
-            if (exp.match(/cos\([^(cosin)]+\d*\)/) !== null) return checkCos(exp)
-            else return exp
+    checkFactA(arr, factPos) {
+        let a
+        let b = factPos - 1
+        let i = b
+        let counterEnd = 0
+        let counterBegin = 0
+        let arg = []
+        if (!/\)/.test(arr[b])) {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
+            }
+        } else {
+            do {
+                if (/\)/.test(arr[i])) counterEnd++
+                if (/\(/.test(arr[i])) counterBegin++
+                a = i--
+            } while (counterEnd > counterBegin)
         }
-
-        function checkSin(str) {
-            if (str.match(/sin\([^(cosin)]+\d*\)/) === null) return null
-            let reg = /\d\.*[+\-*\/]*/g
-            let temp = str.match(/sin\([^(cosin)]+\d*\)/)[0]
-            let rez = Math.sin(eval(temp.match(reg).join('')))
-            exp = str.replace(str.match(/sin\([^(cosin)]+\d*\)/)[0], rez)
-            if (exp.match(/sin\([^(cosin)]+\d*\)/) !== null) return checkSin(exp)
-            else return exp
+        for (let i = a; i <= b; i++) {
+            arg.push(arr[i])
         }
-
-        checkCos(str)
-        checkSin(str)
-        if (exp.match(/[cosin]/) !== null) return this.sinCosCheck(exp)
-        return eval(exp)
+        return [arg, a]
     }
 
-    build() {
+    checkPowA(arr, powPos) {
+        let a
+        let b = powPos - 1
+        let i = b
+        let counterEnd = 0
+        let counterBegin = 0
+        let arg = []
+        if (!/\)/.test(arr[b])) {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
+            }
+        } else {
+            do {
+                if (/\)/.test(arr[i])) counterEnd++
+                if (/\(/.test(arr[i])) counterBegin++
+                a = i--
+            } while (counterEnd > counterBegin)
+        }
+        for (let i = a; i <= b; i++) {
+            arg.push(arr[i])
+        }
+        return [arg, a]
+    }
+
+    checkPowB(arr, powPos) {
+        let a = powPos + 1
+        let b
+        let i = a
+        let counterBegin = 0
+        let counterEnd = 0
+        let arg = []
+        if (!/\(/.test(arr[a])) {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i + 1])) ? b = i++ : b = i++
+            }
+        } else {
+            do {
+
+                if (/\(/.test(arr[i])) counterBegin++
+                if (/\)/.test(arr[i])) counterEnd++
+                b = i++
+            } while (counterBegin > counterEnd)
+        }
+
+        for (let i = a; i <= b; i++) {
+            arg.push(arr[i])
+        }
+
+        return [arg, b]
+    }
+
+    build(arrayOfKeys) {
         this.container = render('div', ['container'], null, document.body);
         this.textarea = render('div', ['textarea'], null, this.container);
         this.buttonContiner = render('div', ['button-container'], null, this.container)
-        this.textarea.innerHTML = ''
-        this.verticalKeys.forEach((item) => {
+        this.rotateIcon = render('div', ['rotate-icon'], null, this.container)
+        this.textarea.innerHTML = this.outerValue.join('')
+        this.rotateIcon.addEventListener('click', () => {
+            this.isOrientVertical = !this.isOrientVertical
+            document.body.innerHTML = ''
+            if (this.isOrientVertical) {
+                this.build(vertical_keys)
+            } else {
+                this.build(horizontal_keys)
+                this.container.classList.toggle('horizontal')
+                this.textarea.classList.toggle('horizontal')
+                this.buttonContiner.classList.toggle('horizontal')
+                document.querySelector('.equal').classList.toggle('horizontal')
+            }
+        })
+        arrayOfKeys.forEach((item) => {
             item.forEach((item) => {
                 let newKey = render('div', ['button'], null, this.buttonContiner)
-                if (item === '=') newKey.classList.add('equal')
-                newKey.innerHTML = item
+                if (item['title'] === '=') newKey.classList.add('equal')
+                newKey.innerHTML = item['title']
                 newKey.addEventListener('click', () => {
-                    let currentText = this.textarea.innerHTML.split('')
-                    if (item === 'sin') {
-                        if (this.textarea.innerHTML === '' || this.checkFunc(currentText[currentText.length-1])) {
-                            this.innerValue = this.textarea.innerHTML
-                            this.textarea.innerHTML += 'sin('
+                    try {
+                        if (item['key'] && item['func']) {
+                            this.outerValue.push(item['key'])
+                            this.innerValue.push(item['func'])
                         }
-                    } else if (item === 'cos') {
-                        if (this.textarea.innerHTML === '' || this.checkFunc(currentText[currentText.length-1])) {
-                            this.innerValue = this.textarea.innerHTML
-                            this.textarea.innerHTML += 'cos('
+                        if (item['title'] === '=') {
+                            if (!this.innerValue.length) return
+                            while (this.innerValue.indexOf('^(') !== -1) {
+                                let powPos = this.innerValue.indexOf('^(')
+                                let arr = [...this.innerValue]
+                                let a = this.checkPowA(arr, powPos)
+                                let b = this.checkPowB(arr, powPos)
+                                this.innerValue.splice(a[1], b[1] - a[1] + 1, 'Math.pow(', ...a[0], ',', ...b[0])
+                            }
+                            while (this.innerValue.indexOf('!') !== -1) {
+                                let factPos = this.innerValue.indexOf('!')
+                                let arr = [...this.innerValue]
+                                let a = this.checkFactA(arr, factPos)
+                                this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
+                            }
+                            this.innerValue = eval(this.innerValue.join('')).toFixed(5).split('')
+                            this.outerValue = [...this.innerValue]
+                        } else if (item['title'] === 'C') {
+                            this.outerValue = []
+                            this.innerValue = []
+                        } else if (item['title'] === '←') {
+                            this.outerValue.pop()
+                            this.innerValue.pop()
                         }
-                    } else if (item === '←') {
-                        let temp = this.textarea.innerHTML.split('')
-                        temp.pop()
-                        this.textarea.innerHTML = temp.join('')
-                    } else if (item === '=') {
-                        this.textarea.innerHTML = calc(this.sinCosCheck(this.textarea.innerHTML))
-                    } else if (this.checkFunc(item)) {
-                        let temp = this.textarea.innerHTML.split('')
-                        if (this.checkFunc(temp[temp.length - 1])) this.textarea.innerHTML = temp.join('')
-                        else this.textarea.innerHTML += item
-                    } else this.textarea.innerHTML += item
+                        this.textarea.innerHTML = [...this.outerValue].join('')
+                        let fontSize = 42 - Math.floor(this.outerValue.toString().length / 12) * 6
+                        if (fontSize < 24) fontSize = 24
+                        this.textarea.style.fontSize = `${fontSize}px`
+                        console.log(this.innerValue)
+                    } catch (err) {
+                        this.textarea.style.fontSize = `24px`
+                        this.outerValue = []
+                        this.innerValue = []
+                        this.textarea.innerHTML = 'Некорректное выражение'
+                    }
                 })
             })
         })
