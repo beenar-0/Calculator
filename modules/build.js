@@ -3,6 +3,7 @@ import vertical_keys from './vertical_keys.js'
 import horizontal_keys from "./horizontal_keys.js";
 
 export default class Calculator {
+    isOrientVertical = true
 
     innerValue = []
     outerValue = []
@@ -91,12 +92,26 @@ export default class Calculator {
         return [arg, b]
     }
 
-    build() {
+    build(arrayOfKeys) {
         this.container = render('div', ['container'], null, document.body);
         this.textarea = render('div', ['textarea'], null, this.container);
         this.buttonContiner = render('div', ['button-container'], null, this.container)
-        this.textarea.innerHTML = ''
-        vertical_keys.forEach((item) => {
+        this.rotateIcon = render('div', ['rotate-icon'], null, this.container)
+        this.textarea.innerHTML = this.outerValue.join('')
+        this.rotateIcon.addEventListener('click', () => {
+            this.isOrientVertical = !this.isOrientVertical
+            document.body.innerHTML = ''
+            if (this.isOrientVertical) {
+                this.build(vertical_keys)
+            } else {
+                this.build(horizontal_keys)
+                this.container.classList.toggle('horizontal')
+                this.textarea.classList.toggle('horizontal')
+                this.buttonContiner.classList.toggle('horizontal')
+                document.querySelector('.equal').classList.toggle('horizontal')
+            }
+        })
+        arrayOfKeys.forEach((item) => {
             item.forEach((item) => {
                 let newKey = render('div', ['button'], null, this.buttonContiner)
                 if (item['title'] === '=') newKey.classList.add('equal')

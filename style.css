@@ -3,11 +3,16 @@
     user-select: none;
 }
 
+* {
+    transition: 0.3s;
+}
+
 body {
     background: #FD8016;
 }
 
 .container {
+    position: relative;
     padding: 30px;
     font-family: 'Arial', sans-serif;
     font-style: normal;
@@ -26,6 +31,11 @@ body {
     height: 685px;
 }
 
+.container.horizontal {
+    width: 685px;
+    height: 500px;
+}
+
 .textarea {
     display: flex;
     align-items: flex-start;
@@ -36,6 +46,11 @@ body {
     margin-bottom: 30px;
 }
 
+.textarea.horizontal {
+    width: 625px;
+    height: 150px;
+}
+
 .button-container {
     gap: 15px;
     display: flex;
@@ -43,6 +58,11 @@ body {
     justify-content: space-around;
     width: 410px;
     height: 495px;
+}
+
+.button-container.horizontal {
+    width: 580px;
+    height: 410px;
 }
 
 .button {
@@ -66,4 +86,19 @@ body {
 
 .equal {
     width: 240px;
+}
+
+.equal.horizontal {
+    width: 70px;
+}
+
+.rotate-icon {
+    cursor: pointer;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: url("./assets/rotate.png") center center no-repeat;
+    background-size: contain;
+    top: 15px;
+    right: 15px;
 }
