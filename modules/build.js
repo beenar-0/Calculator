@@ -1,5 +1,4 @@
 import render from './render.js';
-import calc from './calculate.js'
 import vertical_keys from './vertical_keys.js'
 import horizontal_keys from "./horizontal_keys.js";
 
@@ -17,11 +16,17 @@ export default class Calculator {
         let counterEnd = 0
         let counterBegin = 0
         let arg = []
-        do {
-            if (/\)/.test(arr[i])) counterEnd++
-            if (/\(/.test(arr[i])) counterBegin++
-            a = i--
-        } while (counterEnd > counterBegin)
+        if (arr[b] !== ')') {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
+            }
+        } else {
+            do {
+                if (/\)/.test(arr[i])) counterEnd++
+                if (/\(/.test(arr[i])) counterBegin++
+                a = i--
+            } while (counterEnd > counterBegin)
+        }
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
@@ -36,13 +41,20 @@ export default class Calculator {
         let counterBegin = 0
         let counterEnd = 0
         let arg = []
-        do {
-            if (/\(/.test(arr[i])) counterBegin++
-            if (/\)/.test(arr[i])) counterEnd++
-            b = i++
-        } while (counterBegin > counterEnd)
+        if (!/\(/.test(arr[a])) {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i + 1])) ? b = i++ : b = i++
+            }
+        } else {
+            do {
 
-        for (let i = a + 1; i <= b - 1; i++) {
+                if (/\(/.test(arr[i])) counterBegin++
+                if (/\)/.test(arr[i])) counterEnd++
+                b = i++
+            } while (counterBegin > counterEnd)
+        }
+
+        for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
 
@@ -67,15 +79,14 @@ export default class Calculator {
                         }
                         if (item['title'] === '=') {
                             if (!this.innerValue.length) return
-                            while (this.innerValue.indexOf('^') !== -1) {
-                                let powPos = this.innerValue.indexOf('^')
+                            while (this.innerValue.indexOf('^(') !== -1) {
+                                let powPos = this.innerValue.indexOf('^(')
                                 let arr = [...this.innerValue]
                                 let a = this.checkPowA(arr, powPos)
                                 let b = this.checkPowB(arr, powPos)
-                                this.innerValue.splice(a[1], b[1] - a[1], 'Math.pow(', ...a[0], ',', ...b[0])
+                                this.innerValue.splice(a[1], b[1] - a[1] + 1, 'Math.pow(', ...a[0], ',', ...b[0])
                             }
-
-                            this.innerValue = eval(this.innerValue.join('')).toFixed(10).split('')
+                            this.innerValue = eval(this.innerValue.join('')).toFixed(5).split('')
                             this.outerValue = [...this.innerValue]
                         } else if (item['title'] === 'C') {
                             this.outerValue = []
@@ -83,8 +94,6 @@ export default class Calculator {
                         } else if (item['title'] === '←') {
                             this.outerValue.pop()
                             this.innerValue.pop()
-                        } else if (item['title'] === '^') {
-
                         }
                         this.textarea.innerHTML = [...this.outerValue].join('')
                         let fontSize = 42 - Math.floor(this.outerValue.toString().length / 12) * 6

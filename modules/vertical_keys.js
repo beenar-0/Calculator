@@ -94,7 +94,7 @@ export default [
         {
             title: '^',
             key: '^(',
-            func: '^'
+            func: '^('
         },
         {
             title: '-',
