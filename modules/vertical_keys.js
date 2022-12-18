@@ -104,7 +104,7 @@ export default [
         {
             title: '!',
             key: '!',
-            func: 'factorial('
+            func: '!'
         },
     ],
     [

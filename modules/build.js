@@ -2,12 +2,43 @@ import render from './render.js';
 import vertical_keys from './vertical_keys.js'
 import horizontal_keys from "./horizontal_keys.js";
 
-// render(elem, [classList], [child], parent = null, ...attributes)
-
 export default class Calculator {
 
     innerValue = []
     outerValue = []
+
+    fact(n) {
+        if (Number.isInteger(eval(n)) && eval(n) >= 0) {
+            n = eval(n)
+            return n ? n * this.fact(n - 1) : 1;
+        } else {
+            this.innerValue = []
+        }
+    }
+
+    checkFactA(arr, factPos) {
+        let a
+        let b = factPos - 1
+        let i = b
+        let counterEnd = 0
+        let counterBegin = 0
+        let arg = []
+        if (!/\)/.test(arr[b])) {
+            while (/\d+\.*\d*/.test(arr[i])) {
+                (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
+            }
+        } else {
+            do {
+                if (/\)/.test(arr[i])) counterEnd++
+                if (/\(/.test(arr[i])) counterBegin++
+                a = i--
+            } while (counterEnd > counterBegin)
+        }
+        for (let i = a; i <= b; i++) {
+            arg.push(arr[i])
+        }
+        return [arg, a]
+    }
 
     checkPowA(arr, powPos) {
         let a
@@ -30,7 +61,6 @@ export default class Calculator {
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
-
         return [arg, a]
     }
 
@@ -85,6 +115,12 @@ export default class Calculator {
                                 let a = this.checkPowA(arr, powPos)
                                 let b = this.checkPowB(arr, powPos)
                                 this.innerValue.splice(a[1], b[1] - a[1] + 1, 'Math.pow(', ...a[0], ',', ...b[0])
+                            }
+                            while (this.innerValue.indexOf('!') !== -1) {
+                                let factPos = this.innerValue.indexOf('!')
+                                let arr = [...this.innerValue]
+                                let a = this.checkFactA(arr, factPos)
+                                this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
                             }
                             this.innerValue = eval(this.innerValue.join('')).toFixed(5).split('')
                             this.outerValue = [...this.innerValue]
