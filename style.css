@@ -3,10 +3,6 @@
     user-select: none;
 }
 
-* {
-    transition: 0.3s;
-}
-
 body {
     background: #FD8016;
 }
