@@ -16,7 +16,7 @@ export default class Calculator {
         let counterEnd = 0
         let counterBegin = 0
         let arg = []
-        if (arr[b] !== ')') {
+        if (!/\)/.test(arr[b])) {
             while (/\d+\.*\d*/.test(arr[i])) {
                 (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
             }
