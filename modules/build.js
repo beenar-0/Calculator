@@ -10,7 +10,44 @@ export default class Calculator {
     innerValue = []
     outerValue = []
 
+    checkPowA(arr, powPos) {
+        let a
+        let b = powPos - 1
+        let i = b
+        let counterEnd = 0
+        let counterBegin = 0
+        let arg = []
+        do {
+            if (/\)/.test(arr[i])) counterEnd++
+            if (/\(/.test(arr[i])) counterBegin++
+            a = i--
+        } while (counterEnd > counterBegin)
+        for (let i = a; i <= b; i++) {
+            arg.push(arr[i])
+        }
 
+        return [arg, a]
+    }
+
+    checkPowB(arr, powPos) {
+        let a = powPos + 1
+        let b
+        let i = a
+        let counterBegin = 0
+        let counterEnd = 0
+        let arg = []
+        do {
+            if (/\(/.test(arr[i])) counterBegin++
+            if (/\)/.test(arr[i])) counterEnd++
+            b = i++
+        } while (counterBegin > counterEnd)
+
+        for (let i = a + 1; i <= b - 1; i++) {
+            arg.push(arr[i])
+        }
+
+        return [arg, b]
+    }
 
     build() {
         this.container = render('div', ['container'], null, document.body);
@@ -30,6 +67,13 @@ export default class Calculator {
                         }
                         if (item['title'] === '=') {
                             if (!this.innerValue.length) return
+                            while (this.innerValue.indexOf('^') !== -1) {
+                                let powPos = this.innerValue.indexOf('^')
+                                let arr = [...this.innerValue]
+                                let a = this.checkPowA(arr, powPos)
+                                let b = this.checkPowB(arr, powPos)
+                                this.innerValue.splice(a[1], b[1] - a[1], 'Math.pow(', ...a[0], ',', ...b[0])
+                            }
 
                             this.innerValue = eval(this.innerValue.join('')).toFixed(10).split('')
                             this.outerValue = [...this.innerValue]
@@ -47,8 +91,7 @@ export default class Calculator {
                         if (fontSize < 24) fontSize = 24
                         this.textarea.style.fontSize = `${fontSize}px`
                         console.log(this.innerValue)
-                    }
-                    catch (err) {
+                    } catch (err) {
                         this.textarea.style.fontSize = `24px`
                         this.outerValue = []
                         this.innerValue = []
