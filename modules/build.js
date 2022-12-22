@@ -9,11 +9,12 @@ export default class Calculator {
     outerValue = []
 
     fact(n) {
+        console.log(n)
         if (Number.isInteger(eval(n)) && eval(n) >= 0) {
             n = eval(n)
             return n ? n * this.fact(n - 1) : 1;
         } else {
-            this.innerValue = []
+            this.innerValue = ['wrongFact']
         }
     }
 
@@ -25,7 +26,7 @@ export default class Calculator {
         let counterBegin = 0
         let arg = []
         if (!/\)/.test(arr[b])) {
-            while (/\d+\.*\d*/.test(arr[i])) {
+            while (/[\d.]/.test(arr[i])) {
                 (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
             }
         } else {
@@ -78,7 +79,6 @@ export default class Calculator {
             }
         } else {
             do {
-
                 if (/\(/.test(arr[i])) counterBegin++
                 if (/\)/.test(arr[i])) counterEnd++
                 b = i++
@@ -137,8 +137,14 @@ export default class Calculator {
                                 let a = this.checkFactA(arr, factPos)
                                 this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
                             }
-                            this.innerValue = eval(this.innerValue.join('')).toFixed(5).split('')
-                            this.outerValue = [...this.innerValue]
+                            if (this.innerValue[0] === 'wrongFact') {
+                                this.innerValue = []
+                                this.outerValue = ['Некорректный факториал']
+                            }
+                            else {
+                                this.innerValue = eval(this.innerValue.join('')).toFixed(5).split('')
+                                this.outerValue = [...this.innerValue]
+                            }
                         } else if (item['title'] === 'C') {
                             this.outerValue = []
                             this.innerValue = []
@@ -147,11 +153,12 @@ export default class Calculator {
                             this.innerValue.pop()
                         }
                         this.textarea.innerHTML = [...this.outerValue].join('')
-                        let fontSize = 42 - Math.floor(this.outerValue.toString().length / 12) * 6
+                        let fontSize = 42 - Math.floor(this.outerValue.toString().length / 10) * 6
                         if (fontSize < 24) fontSize = 24
                         this.textarea.style.fontSize = `${fontSize}px`
                         console.log(this.innerValue)
                     } catch (err) {
+                        console.log(err)
                         this.textarea.style.fontSize = `24px`
                         this.outerValue = []
                         this.innerValue = []
