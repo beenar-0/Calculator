@@ -50,8 +50,9 @@ export default class Calculator {
         let counterBegin = 0
         let arg = []
         if (!/\)/.test(arr[b])) {
-            while (/\d+\.*\d*/.test(arr[i])) {
-                (/\d+\.*\d*/.test(arr[i - 1])) ? a = i-- : a = i--
+            while (/[\d.]+/.test(arr[i])) {
+                (/[\d.]+/.test(arr[i - 1])) ? a = i-- : a = i--
+                console.log(arr[i])
             }
         } else {
             do {
@@ -118,6 +119,7 @@ export default class Calculator {
                 newKey.innerHTML = item['title']
                 newKey.addEventListener('click', () => {
                     try {
+                        if (this.outerValue[0] === 'Некорректный факториал') this.outerValue = []
                         if (item['key'] && item['func']) {
                             this.outerValue.push(item['key'])
                             this.innerValue.push(item['func'])
@@ -125,6 +127,7 @@ export default class Calculator {
                         if (item['title'] === '=') {
                             if (!this.innerValue.length) return
                             while (this.innerValue.indexOf('^(') !== -1) {
+                                console.log('^')
                                 let powPos = this.innerValue.indexOf('^(')
                                 let arr = [...this.innerValue]
                                 let a = this.checkPowA(arr, powPos)
