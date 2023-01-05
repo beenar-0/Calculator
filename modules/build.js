@@ -9,7 +9,6 @@ export default class Calculator {
     outerValue = []
 
     fact(n) {
-        console.log(n)
         if (Number.isInteger(eval(n)) && eval(n) >= 0) {
             n = eval(n)
             return n ? n * this.fact(n - 1) : 1;
@@ -63,7 +62,6 @@ export default class Calculator {
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
-        console.log(arg)
         return [arg, a]
     }
 
@@ -75,12 +73,10 @@ export default class Calculator {
         let counterEnd = 0
         let arg = []
         if (!/\(/.test(arr[a])) {
-            console.log('un')
             while (/[\d.]+/.test(arr[i])) {
                 (/[\d.]+/.test(arr[i + 1])) ? b = i++ : b = i++
             }
         } else {
-            console.log('dos')
             do {
                 if (/\(/.test(arr[i])) counterBegin++
                 if (/\)/.test(arr[i])) counterEnd++
@@ -91,7 +87,6 @@ export default class Calculator {
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
-        console.log(arg, 'b')
         return [arg, b]
     }
 
@@ -135,8 +130,6 @@ export default class Calculator {
                                 this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
                             }
                             while (this.innerValue.indexOf('^(') !== -1) {
-                                console.log('^')
-                                console.log(this.innerValue)
                                 let powPos = this.innerValue.indexOf('^(')
                                 let arr = [...this.innerValue]
                                 let a = this.checkPowA(arr, powPos)
@@ -162,7 +155,6 @@ export default class Calculator {
                         let fontSize = 42 - Math.floor(this.outerValue.toString().length / 10) * 6
                         if (fontSize < 24) fontSize = 24
                         this.textarea.style.fontSize = `${fontSize}px`
-                        console.log(this.innerValue)
                     } catch (err) {
                         console.log(err)
                         this.textarea.style.fontSize = `24px`
