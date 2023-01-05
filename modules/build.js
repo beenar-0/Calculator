@@ -64,6 +64,7 @@ export default class Calculator {
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
+        console.log(arg)
         return [arg, a]
     }
 
@@ -75,10 +76,12 @@ export default class Calculator {
         let counterEnd = 0
         let arg = []
         if (!/\(/.test(arr[a])) {
-            while (/\d+\.*\d*/.test(arr[i])) {
-                (/\d+\.*\d*/.test(arr[i + 1])) ? b = i++ : b = i++
+            console.log('un')
+            while (/[\d.]+/.test(arr[i])) {
+                (/[\d.]+/.test(arr[i + 1])) ? b = i++ : b = i++
             }
         } else {
+            console.log('dos')
             do {
                 if (/\(/.test(arr[i])) counterBegin++
                 if (/\)/.test(arr[i])) counterEnd++
@@ -89,7 +92,7 @@ export default class Calculator {
         for (let i = a; i <= b; i++) {
             arg.push(arr[i])
         }
-
+        console.log(arg, 'b')
         return [arg, b]
     }
 
@@ -128,6 +131,7 @@ export default class Calculator {
                             if (!this.innerValue.length) return
                             while (this.innerValue.indexOf('^(') !== -1) {
                                 console.log('^')
+                                console.log(this.innerValue)
                                 let powPos = this.innerValue.indexOf('^(')
                                 let arr = [...this.innerValue]
                                 let a = this.checkPowA(arr, powPos)
