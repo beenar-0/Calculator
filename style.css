@@ -1,0 +1,100 @@
+.button-container {
+    -moz-user-select: none;
+    user-select: none;
+}
+
+body {
+    background: #FD8016;
+}
+
+.container {
+    position: relative;
+    padding: 30px;
+    font-family: 'Arial', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 58px;
+    box-shadow: 4px 4px 20px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    background: #EFEFEF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px auto;
+    width: 450px;
+    height: 685px;
+}
+
+.container.horizontal {
+    width: 685px;
+    height: 500px;
+}
+
+.textarea {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    width: 390px;
+    height: 150px;
+    overflow: auto;
+    margin-bottom: 30px;
+}
+
+.textarea.horizontal {
+    width: 625px;
+    height: 150px;
+}
+
+.button-container {
+    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 410px;
+    height: 495px;
+}
+
+.button-container.horizontal {
+    width: 580px;
+    height: 410px;
+}
+
+.button {
+    font-weight: 700;
+    background-color: #DBDBDB;
+    border-radius: 50px;
+    box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.5), 5px 5px 10px rgba(117, 127, 138, 0.5);
+    font-size: 28px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 70px;
+    height: 70px;
+}
+
+.button:active {
+    box-shadow: inset -5px -5px 10px -2px rgba(255, 255, 255, 0.5), inset 5px 5px 10px -2px rgba(117, 127, 138, 0.5);
+}
+
+.equal {
+    width: 240px;
+}
+
+.equal.horizontal {
+    width: 70px;
+}
+
+.rotate-icon {
+    cursor: pointer;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: url("./assets/rotate.png") center center no-repeat;
+    background-size: contain;
+    top: 15px;
+    right: 15px;
+}
