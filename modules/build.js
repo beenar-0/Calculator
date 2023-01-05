@@ -50,9 +50,8 @@ export default class Calculator {
         let counterBegin = 0
         let arg = []
         if (!/\)/.test(arr[b])) {
-            while (/[\d.]+/.test(arr[i])) {
-                (/[\d.]+/.test(arr[i - 1])) ? a = i-- : a = i--
-                console.log(arr[i])
+            while (/[\d.!]+/.test(arr[i])) {
+                (/[\d.!]+/.test(arr[i - 1])) ? a = i-- : a = i--
             }
         } else {
             do {
@@ -129,6 +128,12 @@ export default class Calculator {
                         }
                         if (item['title'] === '=') {
                             if (!this.innerValue.length) return
+                            while (this.innerValue.indexOf('!') !== -1) {
+                                let factPos = this.innerValue.indexOf('!')
+                                let arr = [...this.innerValue]
+                                let a = this.checkFactA(arr, factPos)
+                                this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
+                            }
                             while (this.innerValue.indexOf('^(') !== -1) {
                                 console.log('^')
                                 console.log(this.innerValue)
@@ -137,12 +142,6 @@ export default class Calculator {
                                 let a = this.checkPowA(arr, powPos)
                                 let b = this.checkPowB(arr, powPos)
                                 this.innerValue.splice(a[1], b[1] - a[1] + 1, 'Math.pow(', ...a[0], ',', ...b[0])
-                            }
-                            while (this.innerValue.indexOf('!') !== -1) {
-                                let factPos = this.innerValue.indexOf('!')
-                                let arr = [...this.innerValue]
-                                let a = this.checkFactA(arr, factPos)
-                                this.innerValue.splice(a[1], factPos - a[1] + 1, this.fact(a[0].join('')))
                             }
                             if (this.innerValue[0] === 'wrongFact') {
                                 this.innerValue = []
